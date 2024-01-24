@@ -1,0 +1,29 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: shantanumoghedoc1/qpassesment:latest
+    ports:
+      - "3003:3003" #port mapping here.
+    environment:
+      DB_SERVER: sql-server
+      DB_USER: sa
+      DB_PASSWORD: <Your_SA_Password>
+      DB_DATABASE: ShopDB
+    depends_on:
+      - sql-server
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=<Your_SA_Password>
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    command: "/usr/src/app/executeDB.sh"
+    volumes:
+      - ./create-database.sql:/usr/src/app/create-database.sql
+      - ./executeDB.sh:/usr/src/app/executeDB.sh
