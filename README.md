@@ -24,5 +24,5 @@ Following parts covered:
    - View the list of available grocery items
    - Ability to book multiple grocery items in a single order
    
-4. Containerize the application using Docker for ease of deployment and scaling.
+4. Containerized the application using Docker for ease of deployment and scaling.
 5. Database used mssql.
