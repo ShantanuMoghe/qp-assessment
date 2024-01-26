@@ -2,6 +2,8 @@ const sqlConfig = require('../../sqlConfig');
 const sql = require('mssql');
 
 /**
+ * - Update details (e.g., name, price) of existing grocery items
+ * - Manage inventory levels of grocery items
  * Update groceries.
  * Allowed only for 'admin' user.
  * @param {*} req
@@ -40,6 +42,7 @@ async function updateGroceries(req, res) {
                 price = ${+groceryItem.price},
                 inventory_quantity = ${+groceryItem.quantity},
                 updated_by_user_id = ${userId},
+                is_grocery_available = ${groceryItem.quantity === 0 ? 0 : 1},
                 date_updated = GETDATE()
                 WHERE uid = '${groceryItem.uid.trim()}'
                 AND active_status = 1
@@ -56,7 +59,7 @@ async function updateGroceries(req, res) {
 
     } catch (error) {
         console.error('Error during updateGroceries:', error.message);
-        res.status(500).json({ message: 'Internal Server Error while updating groceries.' });
+        throw error;
     } finally {
         sql.close();
     }

@@ -3,7 +3,7 @@ const sql = require('mssql');
 const { v4: uuidv4 } = require('uuid');
 
 /**
- * Add new groceries.
+ * Add new grocery items to the system.
  * Allowed only for 'admin' user.
  * Takes list of grocery items.
  * @param {*} req
@@ -11,40 +11,6 @@ const { v4: uuidv4 } = require('uuid');
  * @return {*} 
  */
 async function addNewGroceries(req, res) {
-
-    /** optional code.
-     * try {
-
-        const groceryList = req.body;
-
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'You do not have permission to perform this operation.' })
-        }
-
-        // Grocery list is empty
-        if (!(groceryList.length > 0)) {
-            return res.status(400).json({ message: 'Grocery list is empty' });
-        }
-
-        await sql.connect(sqlConfig);
-
-        const userId = req.user.userId;
-
-        for await (let groceryItem of groceryList) {
-            await sql.query(`
-            INSERT INTO Grocery_Items (grocery_name, price, inventory_quantity, added_by_user_id, date_added, active_status)
-            VALUES ('${groceryItem.name.trim()}', ${+groceryItem.price}, ${+groceryItem.quantity}, ${userId} , GETDATE(), 1)
-            `);
-        }
-
-        res.status(200).json({ success: true, message: 'Operation successful' });
-
-    } catch (error) {
-        console.error('Error during addNewGroceries:', error.message);
-        res.status(500).json({ message: 'Internal Server Error while adding new groceries.' });
-    } finally {
-        sql.close();
-    }*/
 
     const groceryItems = req.body;
 
@@ -94,8 +60,8 @@ async function addItem(item, userId) {
         ps.input('uid', sql.UniqueIdentifier);
 
         await ps.prepare(`
-            INSERT INTO Grocery_Items (uid, grocery_name, price, inventory_quantity, added_by_user_id, date_added, active_status)
-            VALUES (@uid, @itemName, @price, @quantity, @userId, GETDATE(), 1)
+            INSERT INTO Grocery_Items (uid, grocery_name, price, inventory_quantity, added_by_user_id, date_added, active_status, is_grocery_available)
+            VALUES (@uid, @itemName, @price, @quantity, @userId, GETDATE(), 1, 1)
             `);
 
         await ps.execute({
